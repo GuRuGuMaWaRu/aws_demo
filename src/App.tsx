@@ -1,6 +1,8 @@
-import { Button } from "./components/ui/button";
 import { useState, useEffect } from "react";
-import { getPrices } from "./api/getPrices";
+import NumberFlow from "@number-flow/react";
+
+import { getPrices } from "@/api/getPrices";
+import { normalizePrices } from "@/utils/normalizePrices";
 import type { CryptoPrices } from "@/types";
 
 function App() {
@@ -8,9 +10,9 @@ function App() {
 
   useEffect(() => {
     const fetchPrices = async () => {
-      const prices = await getPrices();
-      if (prices) {
-        setPrices(prices);
+      const pricesRes = await getPrices();
+      if (pricesRes) {
+        setPrices(normalizePrices(pricesRes));
       }
     };
     fetchPrices();
@@ -18,13 +20,32 @@ function App() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold underline">Hello world!</h1>
-      <div className="flex min-h-svh flex-col items-center justify-center">
-        <Button>Click me</Button>
+      <h1 className="text-center text-2xl font-bold">Live Crypto Prices</h1>
+      <div className="flex flex-col items-center justify-center gap-4">
         {prices && (
           <div>
-            <p>Bitcoin: {prices.bitcoin.usd}</p>
-            <p>Ethereum: {prices.ethereum.usd}</p>
+            <p>
+              Bitcoin:{" "}
+              <NumberFlow
+                value={prices.bitcoin}
+                format={{
+                  style: "currency",
+                  currency: "USD",
+                }}
+                suffix=" USD"
+              />
+            </p>
+            <p>
+              Ethereum:{" "}
+              <NumberFlow
+                value={prices.ethereum}
+                format={{
+                  style: "currency",
+                  currency: "USD",
+                }}
+                suffix=" USD"
+              />
+            </p>
           </div>
         )}
       </div>
