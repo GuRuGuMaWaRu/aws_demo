@@ -1,11 +1,7 @@
 import { Button } from "./components/ui/button";
 import { useState, useEffect } from "react";
 import { getPrices } from "./api/getPrices";
-
-type CryptoPrices = {
-  bitcoin: { usd: number };
-  ethereum: { usd: number };
-};
+import type { CryptoPrices } from "@/types";
 
 function App() {
   const [prices, setPrices] = useState<CryptoPrices | null>(null);
