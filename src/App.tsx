@@ -4,6 +4,7 @@ import NumberFlow from "@number-flow/react";
 import { getPrices } from "@/api/getPrices";
 import { normalizePrices } from "@/utils/normalizePrices";
 import type { CryptoPrices } from "@/types";
+import { getCache, saveCache } from "@/utils/cache";
 
 function App() {
   const [prices, setPrices] = useState<CryptoPrices | null>(null);
@@ -11,8 +12,18 @@ function App() {
   useEffect(() => {
     const fetchPrices = async () => {
       const pricesRes = await getPrices();
+
       if (pricesRes) {
         setPrices(normalizePrices(pricesRes));
+        saveCache({
+          prices: pricesRes,
+          timestamp: Date.now(),
+        });
+      } else {
+        const cache = getCache();
+        if (cache) {
+          setPrices(normalizePrices(cache.prices));
+        }
       }
     };
     fetchPrices();
